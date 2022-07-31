@@ -32,6 +32,16 @@ describe("Minimal reproduction of missing feature in pg-mem: views are not updat
   CREATE VIEW users_view AS SELECT * FROM users`);
   });
 
+  it("select works fine from the view", () => {
+    const users = database.public.many(`
+    SELECT * FROM users_view;
+    `);
+
+    expect(users.map(({ id, name }) => ({ id, name }))).toEqual([
+      { id: "1", name: "Bruce Wayne" },
+    ]);
+  });
+
   it("try to insert row in view - it fails", () => {
     expect(() =>
       database.public.many(`
